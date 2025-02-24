@@ -5,11 +5,14 @@ import { useAddInvestor } from "../../actions/investor.actions";
 const AddInvestorForm: FC<{
   isOpen: boolean;
   SetOpen: (open: boolean) => void;
-}> = ({ isOpen, SetOpen }) => {
+  updater: () => void;
+}> = ({ isOpen, SetOpen, updater }) => {
   const { isLoading, addInvestor } = useAddInvestor();
 
   const [name, setName] = useState<string>("");
-  const [typeOfStrategy, setTypeStrategy] = useState<"AGGRESSIVE" | "CONSERVATIVE">("AGGRESSIVE");
+  const [typeOfStrategy, setTypeStrategy] = useState<
+    "AGGRESSIVE" | "CONSERVATIVE"
+  >("AGGRESSIVE");
 
   return (
     <>
@@ -30,9 +33,12 @@ const AddInvestorForm: FC<{
             className="flex flex-col gap-5"
             onSubmit={(e) => {
               e.preventDefault();
+              if (!name) return;
 
-              addInvestor({ name, strategyType: typeOfStrategy });
-              SetOpen(false)
+              addInvestor({ name, strategyType: typeOfStrategy }).then(() => {
+                updater();
+                SetOpen(false);
+              });
             }}
           >
             <input
@@ -42,7 +48,13 @@ const AddInvestorForm: FC<{
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
-            <select className="p-2 rounded-lg border" value={typeOfStrategy} onChange={(e) => setTypeStrategy(e.target.value as "AGGRESSIVE" | "CONSERVATIVE")}>
+            <select
+              className="p-2 rounded-lg border"
+              value={typeOfStrategy}
+              onChange={(e) =>
+                setTypeStrategy(e.target.value as "AGGRESSIVE" | "CONSERVATIVE")
+              }
+            >
               <option value="AGGRESSIVE">Aggressive</option>
               <option value="CONSERVATIVE">Conservative</option>
             </select>

@@ -1,11 +1,12 @@
-import { Trash2, UserPen, CirclePlus } from "lucide-react";
-import { useGetInvestors } from "../../actions/investor.actions";
+import { Trash2, UserPen, CirclePlus, Loader2 } from "lucide-react";
+import { useDeleteInvestor, useGetInvestors } from "../../actions/investor.actions";
 import { useState } from "react";
 import AddInvestorForm from "./add-investor.form";
 
 const InvestorsList = () => {
-  const { error, isLoading, investors } = useGetInvestors();
   const [isOpen, SetOpen] = useState<boolean>(false);
+  const { error, isLoading, investors, setC, c } = useGetInvestors();
+  const { isLoading: deleteLoading, deleteInvestor } = useDeleteInvestor();
 
   return (
     <main className="py-4 grow pr-5">
@@ -20,7 +21,7 @@ const InvestorsList = () => {
       </h2>
 
       {isOpen && (
-        <AddInvestorForm isOpen={ isOpen } SetOpen={ SetOpen } />
+        <AddInvestorForm isOpen={ isOpen } SetOpen={ SetOpen } updater={ () => setC(c + 1) } />
       )}
 
       {isLoading && <p>Loading investors...</p>}
@@ -40,8 +41,13 @@ const InvestorsList = () => {
                 <button className="hover:bg-gray-500 hover:text-white rounded-full p-2 gap-5 transition-colors duration-150">
                   <UserPen />
                 </button>
-                <button className="hover:bg-red-500 hover:text-white rounded-full p-2 gap-5 transition-colors duration-150">
-                  <Trash2 />
+                <button className="hover:bg-red-500 hover:text-white rounded-full p-2 gap-5 transition-colors duration-150" onClick={
+                  () => {
+                    deleteInvestor({ id: investor.id }).then(() => setC(c + 1));
+                  } }>
+                  {
+                    deleteLoading ? <Loader2 /> : <Trash2 />
+                  }
                 </button>
               </div>
             </li>

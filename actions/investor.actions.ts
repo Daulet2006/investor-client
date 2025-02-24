@@ -41,6 +41,7 @@ export const useGetInvestors = () => {
         isLoading,
         error,
         investors,
+		c,
 		setC
     } as const
 }
@@ -82,4 +83,37 @@ export const useAddInvestor = () => {
 
 export const updateInvestor = () => {}
 
-export const deleteInvestor = () => {}
+export const useDeleteInvestor = () => {
+	const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [error, setError] = useState<string>('')
+
+	const deleteInvestor = async ({ id }: { id: number }) => {
+		setIsLoading(true)
+		try {
+			const response = await fetch(`http://localhost:8080/investors/${id}`, {
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					body: "T"
+				})
+			})
+			if (!response.ok) {
+				const errorData = await response.json()
+				setError(errorData.error || 'Failed to delete investor')
+			}
+		} catch (err) {
+			console.log(err);
+			setError('An error occurred while adding the investor')
+		} finally {
+			setIsLoading(false)
+		}
+	}
+
+	return {
+		isLoading,
+		error,
+		deleteInvestor
+	} as const
+}
