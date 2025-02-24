@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Investment API Test</title>
+</head>
+<body class="bg-gray-100 p-10">
+    <div class="max-w-xl mx-auto bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-xl font-bold mb-4">Добавить инвестора</h2>
+        <input id="investorName" type="text" placeholder="Имя" class="border p-2 w-full mb-2">
+        <select id="investorStrategy" class="border p-2 w-full mb-2">
+            <option value="CONSERVATIVE">Консервативный</option>
+            <option value="AGGRESSIVE">Агрессивный</option>
+        </select>
+        <button onclick="addInvestor()" class="bg-blue-500 text-white p-2 w-full rounded">Добавить</button>
+        <h2 class="text-xl font-bold mt-6 mb-4">Список инвесторов</h2>
+        <ul id="investorsList" class="list-disc pl-5"></ul>
+    </div>
+
+    <script>
+        async function addInvestor() {
+            const name = document.getElementById('investorName').value;
+            const strategy = document.getElementById('investorStrategy').value;
+            
+            const response = await fetch('/investors', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `name=${name}&strategy=${strategy}`
+            });
+            
+            if (response.ok) {
+                alert('Инвестор добавлен!');
+                fetchInvestors();
+            }
+        }
+
+        async function fetchInvestors() {
+            const response = await fetch('/investors');
+            const investors = await response.json();
+            
+            const list = document.getElementById('investorsList');
+            list.innerHTML = '';
+            
+            investors.forEach(investor => {
+                const item = document.createElement('li');
+                item.textContent = `${investor.name} - ${investor.strategyType}`;
+                list.appendChild(item);
+            });
+        }
+
+        fetchInvestors();
+    </script>
+</body>
+</html>
