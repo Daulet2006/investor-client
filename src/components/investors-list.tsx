@@ -1,12 +1,12 @@
-import { Trash2, UserPen, CirclePlus, Loader2 } from "lucide-react";
-import { useDeleteInvestor, useGetInvestors } from "../../actions/investor.actions";
 import { useState } from "react";
+import {  CirclePlus } from "lucide-react";
 import AddInvestorForm from "./add-investor.form";
+import InvestorCard from "./investor.card";
+import { useGetInvestors } from "../../actions/investor.actions";
 
 const InvestorsList = () => {
   const [isOpen, SetOpen] = useState<boolean>(false);
   const { error, isLoading, investors, setC, c } = useGetInvestors();
-  const { isLoading: deleteLoading, deleteInvestor } = useDeleteInvestor();
 
   return (
     <main className="py-4 grow pr-5">
@@ -21,36 +21,20 @@ const InvestorsList = () => {
       </h2>
 
       {isOpen && (
-        <AddInvestorForm isOpen={ isOpen } SetOpen={ SetOpen } updater={ () => setC(c + 1) } />
+        <AddInvestorForm
+          isOpen={isOpen}
+          SetOpen={SetOpen}
+          updater={() => setC(c + 1)}
+        />
       )}
 
       {isLoading && <p>Loading investors...</p>}
       {error && <p className="text-red-500">Error loading investors.</p>}
 
       {!isLoading && !error && investors?.length > 0 ? (
-        <ul className="flex flex-col w-full">
+        <ul className="flex flex-col w-full gap-5">
           {investors.map((investor) => (
-            <li
-              key={investor.id}
-              className="flex justify-between items-center p-4 border rounded-lg shadow-sm"
-            >
-              <p className="text-lg font-semibold mr-2">
-                Name: {investor.name} Type: {investor.strategyType === "AGGRESSIVE" ? "Aggressive" : "Conservative"}
-              </p>
-              <div className="flex gap-5">
-                <button className="hover:bg-gray-500 hover:text-white rounded-full p-2 gap-5 transition-colors duration-150">
-                  <UserPen />
-                </button>
-                <button className="hover:bg-red-500 hover:text-white rounded-full p-2 gap-5 transition-colors duration-150" onClick={
-                  () => {
-                    deleteInvestor({ id: investor.id }).then(() => setC(c + 1));
-                  } }>
-                  {
-                    deleteLoading ? <Loader2 /> : <Trash2 />
-                  }
-                </button>
-              </div>
-            </li>
+            <InvestorCard investor={investor} updater={() => setC(c + 1)} />
           ))}
         </ul>
       ) : (

@@ -1,8 +1,107 @@
 // ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
+// ISIS UP ISIS ONE LOVE
 
 import { useEffect, useState } from "react"
 
-interface Investor {
+export interface Investor {
 	id: number
 	name: string
 	strategyType: "AGGRESSIVE" | "CONSERVATIVE"
@@ -33,7 +132,6 @@ export const useGetInvestors = () => {
 				setIsLoading(false)
 			}
 		}
-
 		fetchPost()
 	}, [c])
 
@@ -81,7 +179,40 @@ export const useAddInvestor = () => {
 	} as const
 }
 
-export const updateInvestor = () => {}
+export const useUpdateInvestor = () => {
+	const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [error, setError] = useState<string>('')
+
+	const updateInvestor = async ({ id, strategyType }: { id: number, strategyType: "AGGRESSIVE" | "CONSERVATIVE" }) => {
+		setIsLoading(true)
+		try {
+			const response = await fetch(`http://localhost:8080/investors/${id}/strategy?newStrategy=${strategyType}`, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					body: "T"
+				})
+			})
+			if (!response.ok) {
+				const errorData = await response.json()
+				setError(errorData.error || 'Failed to delete investor')
+			}
+		} catch (err) {
+			console.log(err);
+			setError('An error occurred while adding the investor')
+		} finally {
+			setIsLoading(false)
+		}
+	}
+
+	return {
+		isLoading,
+		error,
+		updateInvestor
+	} as const
+}
 
 export const useDeleteInvestor = () => {
 	const [isLoading, setIsLoading] = useState<boolean>(false)
